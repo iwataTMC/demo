@@ -1,0 +1,43 @@
+name: CICD
+
+on:
+  push:
+    branches:
+      - main
+      - prod
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm ci
+
+    #   # ✅ Lint
+    #   - name: Run ESLint
+    #     run: npm run lint
+
+    #   # ✅ Unit Test
+    #   - name: Run Unit Tests
+    #     run: npm run test -- --coverage
+
+    #   # ✅ Build
+    #   - name: Build Next.js
+    #     run: npm run build
+
+    #   # ✅ E2E Test
+    #   - name: Run Playwright E2E Tests
+    #     run: |
+    #       npx playwright install --with-deps
+    #       npm run start & npx wait-on http://localhost:3000
+    #       npm run test:e2e
+
+      # ✅ semantic-release
+      - name: Release
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
